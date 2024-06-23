@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <climits>
 
 using namespace std;
 
@@ -14,17 +15,18 @@ struct Individuo {
     Individuo(vector <int> cromo, double fit) : cromosoma(cromo), fitness(fit) {};
 };
 
-vector <Individuo> inicializarPoblacion(int popsize, int numItems,vector<int> anaqueles, vector <int> items, int alturaMax) {
+vector <Individuo> inicializarPoblacion(int popsize, int numItems, vector<int> anaqueles, vector <int> items, int alturaMax) {
     vector <Individuo> poblacion;
     for (int i = 0; i < popsize; i++) {
         vector <int> cromo(numItems);
         for (int j = 0; j < numItems; j++) {
             /*
-            int indxAnaquel = rand() % (anaqueles.size());
+            int indxAnaquel =
             if (anaqueles[indxAnaquel] + items[j] <= alturaMax) {
-                cromo[j] = indxAnaquel;
+                 = indxAnaquel;
             }
             */
+            cromo[j] = rand() % (anaqueles.size() + 1);
         }
         poblacion.emplace_back(cromo, 0);
     }
@@ -56,11 +58,14 @@ Individuo seleccionTorneo(vector <Individuo>& poblacion, int tamanhoTorneo) {
 
 void calcularFitness(Individuo& individuo, vector <int> items, int numAnaqueles, int alturaMax) {
     int sumaAltura, sumaAlturaTotal = 0;
+    int sumaCajasNoAsignadas = 0;
     for (int i = 1; i <= numAnaqueles; i++) {
         sumaAltura = 0;
         for (int j = 0; j < items.size(); j++) {
             if (individuo.cromosoma[j] == i)
                 sumaAltura += items[j];
+            if (individuo.cromosoma[j] == 0)
+                sumaCajasNoAsignadas += items[j];
         }
         if (sumaAltura > alturaMax) {
             individuo.fitness = 0;
@@ -70,7 +75,12 @@ void calcularFitness(Individuo& individuo, vector <int> items, int numAnaqueles,
     }
 
     int espacioLibre = (alturaMax * numAnaqueles) - sumaAlturaTotal;
-    double fitness = (espacioLibre != 0) ? ((double)sumaAlturaTotal / espacioLibre) : INT_MAX;
+    if (espacioLibre == 0 && sumaCajasNoAsignadas == 0) {
+        individuo.fitness = INT_MAX;
+        return;
+    }
+
+    double fitness = (double)sumaAlturaTotal / espacioLibre;
     individuo.fitness = fitness;
 }
 
@@ -91,11 +101,35 @@ pair <Individuo, Individuo> cruceUniforme(Individuo& padre, Individuo& madre) {
     return make_pair(Individuo(hijoCromo, 0), Individuo(hijaCromo, 0));
 }
 
-pair <Individuo, Individuo> cruceMultipunto(Individuo& padre, Individuo& madre) {
+pair <Individuo, Individuo> cruceMultipunto(Individuo& padre, Individuo& madre, int cantPuntosCorte) {
     int tamanho = padre.cromosoma.size();
-    vector <int> hijoCromo(tamanho);
-    vector <int> hijaCromo(tamanho);
+    //0 1 2 3 4 5 6 7 8
+    vector <int> puntosCorte(cantPuntosCorte);
+    for (int i = 0; i < puntosCorte.size(); i++) {
+        puntosCorte[i] = (rand() % (tamanho - 4)) + 2;
+    }
+    sort(puntosCorte.begin(), puntosCorte.end());
+    bool flag = true;
+    vector <int> hijoCromo = padre.cromosoma;
+    vector <int> hijaCromo = madre.cromosoma;
     
+    int indx = 0;
+    for (int i = 0; i < puntosCorte.size(); i++) {
+        if (flag) {
+            for (; indx < puntosCorte[i]; indx++) {
+                hijoCromo[indx] = padre.cromosoma[indx];
+                hijaCromo[indx] = madre.cromosoma[indx];
+            }
+        }
+        else {
+            for (; indx < puntosCorte[i]; indx++) {
+                hijoCromo[indx] = madre.cromosoma[indx];
+                hijaCromo[indx] = padre.cromosoma[indx];
+            }
+        }
+        flag = !flag;
+    }
+
     return make_pair(Individuo(hijoCromo, 0), Individuo(hijaCromo, 0));
 }
 
@@ -103,6 +137,16 @@ pair <Individuo, Individuo> cruceMultipunto(Individuo& padre, Individuo& madre) 
 void mutacion_single_gene(Individuo& individuo, int numAnaqueles) {
     int posicion = rand() % individuo.cromosoma.size();
     individuo.cromosoma[posicion] = rand() % (numAnaqueles + 1);
+}
+
+void mutacion_permutation_inversion(Individuo& individuo) {
+    
+    int position1 = rand() % individuo.cromosoma.size();
+    int position2 = rand() % individuo.cromosoma.size();
+    if (position1 > position2)
+        swap(position1, position2);
+
+    reverse(individuo.cromosoma.begin() + position1, individuo.cromosoma.begin() + position2);
 }
 
 
@@ -124,8 +168,12 @@ vector <Individuo> seleccionarSupervivientes(vector <Individuo>& poblacion, vect
 }
 
 void imprimeSolucion(Individuo& individuo, vector <int> items, int numAnaqueles) {
-    for (int i = 1; i <= numAnaqueles; i++) {
-        cout << "Anaquel " << i << ": ";
+    for (int i = 0; i <= numAnaqueles; i++) {
+        if (i == 0) 
+            std::cout << "\nAltura de cajas no asignadas: ";
+        else 
+            cout << "Anaquel " << i << ": ";
+        
         for (int j = 0; j < items.size(); j++) {
             if (individuo.cromosoma[j] == i)
                 cout << items[j] << " ";
@@ -135,9 +183,10 @@ void imprimeSolucion(Individuo& individuo, vector <int> items, int numAnaqueles)
     cout << "Valor de fitness: " << individuo.fitness << endl;
 }
 
-void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int numAnaqueles, int alturaMax, int generaciones, double tasaMutacion, int tamanhoTorneo) {
+void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int numAnaqueles, int ALTURA_MAX,
+    int generaciones, double tasaMutacion, int tamanhoTorneo, int puntosDeCorte) {
     int popsize = poblacion.size();
-    evaluarPoblacion(poblacion, items, numAnaqueles, alturaMax);
+    evaluarPoblacion(poblacion, items, numAnaqueles, ALTURA_MAX);
     vector <int> mejorFitness;
     int posMejorFitness = buscarMejorIndividuo(poblacion);
     Individuo mejorIndividuo(poblacion[posMejorFitness].cromosoma, poblacion[posMejorFitness].fitness);
@@ -153,16 +202,16 @@ void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int nu
         vector <Individuo> poblacionDescendencia;
         for (int k = 0; k < poolCruces.size(); k++) {
 
-            pair <Individuo, Individuo> hijos = cruceUniforme(poolCruces[k].first, poolCruces[k].second);
-            //pair <Individuo, Individuo> hijos = cruceMultipunto(poolCruces[k].first, poolCruces[k].second);
-            
-            if ((double)rand() / RAND_MAX < tasaMutacion) {
-                mutacion_single_gene(hijos.first, numAnaqueles);
+            //pair <Individuo, Individuo> hijos = cruceUniforme(poolCruces[k].first, poolCruces[k].second);
+            pair <Individuo, Individuo> hijos = cruceMultipunto(poolCruces[k].first, poolCruces[k].second, puntosDeCorte);
 
+            if ((double)rand() / RAND_MAX < tasaMutacion) {
+                //mutacion_single_gene(hijos.first, numAnaqueles);
+                mutacion_permutation_inversion(hijos.first);
             }
             if ((double)rand() / RAND_MAX < tasaMutacion) {
-                mutacion_single_gene(hijos.second, numAnaqueles);
-
+                //mutacion_single_gene(hijos.second, numAnaqueles);
+                mutacion_permutation_inversion(hijos.second);
             }
 
 
@@ -170,7 +219,7 @@ void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int nu
             poblacionDescendencia.push_back(hijos.second);
         }
 
-        evaluarPoblacion(poblacionDescendencia, items, numAnaqueles, alturaMax);
+        evaluarPoblacion(poblacionDescendencia, items, numAnaqueles, ALTURA_MAX);
         poblacion = seleccionarSupervivientes(poblacion, poblacionDescendencia, popsize);
 
         posMejorFitness = buscarMejorIndividuo(poblacion);
@@ -200,9 +249,9 @@ void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int nu
 //Puede ser
 
 //Krlos
-//Mutacion permutacion por inversion - diapo 21
-//-Implementar el cruzamiento multipunto
-//-Generar items aleatorios
+//---Mutacion permutacion por inversion - diapo 21
+//---Implementar el cruzamiento multipunto
+//---Generar items aleatorios
 
 //Mateo
 //poblacion inical con restriccion
@@ -214,7 +263,15 @@ void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int nu
 //Nicolas
 //Seleccion de sobrevivientes no tan heuristico
 
+vector<int> generarItemsAleatorios(int ALTURA_MAX, int cantItems) {
 
+    vector<int> items(cantItems);
+    for (int i = 0; i < items.size(); i++) {
+        items[i] = rand() % ALTURA_MAX + 1;
+    }
+
+    return items;
+}
 
 int main(int argc, char** argv) {
     srand(time(0));
@@ -228,17 +285,20 @@ int main(int argc, char** argv) {
     const double TASA_MUTACION_B = 0.4;
     const double TASA_MUTACION_C = 0.8;
     const int TAMANHO_TORNEO = 3;
-    
     const double TASA_CASAMIENTO = 0.5;
+    const int PUNTOS_CORTE = 2;
 
     //vector <int> items = { 30,90,120,85,30,45,70,60,70 };
-    vector <int> items = { 30,90,120,85,30,45,70,60,70,20,10,120 };
+    //vector <int> items = { 30,90,120,85,30,45,70,60,70,20,10,120 };
     //vector <int> items = { 150, 150, 150, 150, 150};
-    const int NUM_ITEMS = items.size();
+    //const int NUM_ITEMS = items.size();
+
+    const int NUM_ITEMS = 9;
+    vector <int> items = generarItemsAleatorios(ALTURA_MAX, NUM_ITEMS);
     vector<int> anaqueles(NUM_ANAQUELES, ALTURA_MAX);
     vector <Individuo> poblacion = inicializarPoblacion(POPSIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX);
 
-    algoritmoGenetico(poblacion, items, NUM_ANAQUELES, ALTURA_MAX, GENERACIONES, TASA_MUTACION_A, TAMANHO_TORNEO);
+    algoritmoGenetico(poblacion, items, NUM_ANAQUELES, ALTURA_MAX, GENERACIONES, TASA_MUTACION_C, TAMANHO_TORNEO, PUNTOS_CORTE);
 
     return 0;
 }
