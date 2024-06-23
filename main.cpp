@@ -75,12 +75,7 @@ void calcularFitness(Individuo& individuo, vector <int> items, int numAnaqueles,
     }
 
     int espacioLibre = (alturaMax * numAnaqueles) - sumaAlturaTotal;
-    if (espacioLibre == 0 && sumaCajasNoAsignadas == 0) {
-        individuo.fitness = INT_MAX;
-        return;
-    }
-
-    double fitness = (double)sumaAlturaTotal / espacioLibre;
+    double fitness = (espacioLibre != 0) ? ((double)sumaAlturaTotal / espacioLibre) : INT_MAX;
     individuo.fitness = fitness;
 }
 
