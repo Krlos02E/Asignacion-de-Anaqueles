@@ -15,22 +15,46 @@ struct Individuo {
     Individuo(vector <int> cromo, double fit) : cromosoma(cromo), fitness(fit) {};
 };
 
-vector <Individuo> inicializarPoblacion(int popsize, int numItems, vector<int> anaqueles, vector <int> items, int alturaMax) {
+vector <Individuo> inicializarPoblacion(int popsize, int numItems,vector<int> anaqueles, vector <int> items, int alturaMax, int numAnaqueles) {
     vector <Individuo> poblacion;
     for (int i = 0; i < popsize; i++) {
-        vector <int> cromo(numItems);
+        vector <int> cromo(numItems, 0);
+        vector<int> alturasAnaqueles(numAnaqueles,0);       //Inicializar vector para analizar restringir la poblacion por alturas
+        
         for (int j = 0; j < numItems; j++) {
-            /*
-            int indxAnaquel =
-            if (anaqueles[indxAnaquel] + items[j] <= alturaMax) {
-                 = indxAnaquel;
+            bool asignado = false;
+            int intentos=0;                       // Colocar un maximo de intentos a probar por item (para evitar bucles infinitos)
+            while (!asignado && intentos<20) {
+                int indiceAnaquel = rand() % (anaqueles.size());    // Seleccionar un anaquel al azar
+                cout<<indiceAnaquel<<" - "<<alturasAnaqueles[indiceAnaquel]<<" - "<<items[j]<<endl;
+                if (alturasAnaqueles[indiceAnaquel] + items[j] <= alturaMax) {
+                    cromo[j] = indiceAnaquel;                       // Asignar item al anaquel
+                    alturasAnaqueles[indiceAnaquel] += items[j];    // Actualizar la altura del anaquel
+                    asignado = true;
+                }
+                intentos++;
             }
-            */
-            cromo[j] = rand() % (anaqueles.size() + 1);
+            
         }
+        cout<<"------------------------"<<endl;
         poblacion.emplace_back(cromo, 0);
     }
     return poblacion;
+//    vector <Individuo> poblacion;
+//    for (int i = 0; i < popsize; i++) {
+//        vector <int> cromo(numItems);
+//        for (int j = 0; j < numItems; j++) {
+//            /*
+//            int indxAnaquel = rand() % (anaqueles.size());
+//            if (anaqueles[indxAnaquel] + items[j] <= alturaMax) {
+//                cromo[j] = indxAnaquel;
+//            }
+//            */
+//            cromo[j] = rand() % (anaqueles.size()+1);
+//        }
+//        poblacion.emplace_back(cromo, 0);
+//    }
+//    return poblacion;
 }
 
 int buscarMejorIndividuo(vector <Individuo> poblacion) {
@@ -249,7 +273,7 @@ void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int nu
 //---Generar items aleatorios
 
 //Mateo
-//poblacion inical con restriccion
+//---poblacion inical con restriccion
 
 //Jairo
 //Generar arreglo de cajas que calcen perfectamente
@@ -291,7 +315,7 @@ int main(int argc, char** argv) {
     const int NUM_ITEMS = 9;
     vector <int> items = generarItemsAleatorios(ALTURA_MAX, NUM_ITEMS);
     vector<int> anaqueles(NUM_ANAQUELES, ALTURA_MAX);
-    vector <Individuo> poblacion = inicializarPoblacion(POPSIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX);
+    vector <Individuo> poblacion = inicializarPoblacion(POPSIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX, NUM_ANAQUELES);
 
     algoritmoGenetico(poblacion, items, NUM_ANAQUELES, ALTURA_MAX, GENERACIONES, TASA_MUTACION_C, TAMANHO_TORNEO, PUNTOS_CORTE);
 
