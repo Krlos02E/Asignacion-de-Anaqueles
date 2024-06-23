@@ -25,7 +25,7 @@ vector <Individuo> inicializarPoblacion(int popsize, int numItems,vector<int> an
             bool asignado = false;
             int intentos=0;                       // Colocar un maximo de intentos a probar por item (para evitar bucles infinitos)
             while (!asignado && intentos<20) {
-                int indiceAnaquel = rand() % (anaqueles.size());    // Seleccionar un anaquel al azar
+                int indiceAnaquel = rand() % (anaqueles.size() + 1);    // Seleccionar un anaquel al azar
                 cout<<indiceAnaquel<<" - "<<alturasAnaqueles[indiceAnaquel]<<" - "<<items[j]<<endl;
                 if (alturasAnaqueles[indiceAnaquel] + items[j] <= alturaMax) {
                     cromo[j] = indiceAnaquel;                       // Asignar item al anaquel
@@ -225,12 +225,12 @@ void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int nu
             pair <Individuo, Individuo> hijos = cruceMultipunto(poolCruces[k].first, poolCruces[k].second, puntosDeCorte);
 
             if ((double)rand() / RAND_MAX < tasaMutacion) {
-                //mutacion_single_gene(hijos.first, numAnaqueles);
-                mutacion_permutation_inversion(hijos.first);
+                mutacion_single_gene(hijos.first, numAnaqueles);
+                //mutacion_permutation_inversion(hijos.first);
             }
             if ((double)rand() / RAND_MAX < tasaMutacion) {
-                //mutacion_single_gene(hijos.second, numAnaqueles);
-                mutacion_permutation_inversion(hijos.second);
+                mutacion_single_gene(hijos.second, numAnaqueles);
+                //mutacion_permutation_inversion(hijos.second);
             }
 
 
