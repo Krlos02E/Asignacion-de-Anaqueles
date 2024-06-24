@@ -302,6 +302,21 @@ vector<int> generarItemsAleatorios(int ALTURA_MAX, int cantItems) {
     return items;
 }
 
+vector<int> generarItemsPerfectos(int ALTURA_MAX, int NUM_ANAQUELES, int cantItems) {
+
+    vector<int> items(cantItems);
+   
+    for (int i = 0; i < items.size(); i++) {  
+        if(i%2 == 0 || i == 0)
+            items[i] = (rand() % ALTURA_MAX/10 + 1)*10;
+        else 
+            items[i] = 150 - items[i-1]; 
+    }
+    sort(items.begin(), items.end(), greater<int>());
+    
+    return items;
+}
+
 int main(int argc, char** argv) {
     srand(time(0));
 
@@ -319,12 +334,17 @@ int main(int argc, char** argv) {
 
     //vector <int> items = { 30,90,120,85,30,45,70,60,70 };
     //vector <int> items = { 30,90,120,85,30,45,70,60,70,20,10,120 };
-    vector <int> items = { 150, 150, 100, 150, 120, 20, 30, 50, 10, 10, 10};
+    //vector <int> items = { 150, 150, 100, 150, 120, 20, 30, 50, 10, 10, 10};
     //vector <int> items = { 150, 150, 150, 150, 150};
-    const int NUM_ITEMS = items.size();
+    //const int NUM_ITEMS = items.size();
 
     //const int NUM_ITEMS = 9;
     //vector <int> items = generarItemsAleatorios(ALTURA_MAX, NUM_ITEMS);
+    
+    // Genera 10 items aleatorios que encaja en los anaqueles 
+    const int NUM_ITEMS = 10;
+    vector <int> items = generarItemsAleatorios(ALTURA_MAX, NUM_ITEMS);
+    
     vector<int> anaqueles(NUM_ANAQUELES, ALTURA_MAX);
     vector <Individuo> poblacion = inicializarPoblacion(POPSIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX);
 
