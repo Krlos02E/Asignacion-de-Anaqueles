@@ -302,18 +302,27 @@ vector<int> generarItemsAleatorios(int ALTURA_MAX, int cantItems) {
     return items;
 }
 
-vector<int> generarItemsPerfectos(int ALTURA_MAX, int NUM_ANAQUELES, int cantItems) {
+// Función para generar items que llenen perfectamente los anaqueles
+vector<int> generarItemsPerfectos(int ALTURA_MAX, int NUM_ANAQUELES, int NUM_ITEMS) {
+    srand(time(NULL));
+    vector<int> items;
 
-    vector<int> items(cantItems);
-   
-    for (int i = 0; i < items.size(); i++) {  
-        if(i%2 == 0 || i == 0)
-            items[i] = (rand() % ALTURA_MAX/10 + 1)*10;
-        else 
-            items[i] = 150 - items[i-1]; 
-    }
-    sort(items.begin(), items.end(), greater<int>());
+    int suma_anaqueles = ALTURA_MAX * NUM_ANAQUELES;
+
+    // Genera un item grande para llenar un anaquel completo
+    items.push_back(ALTURA_MAX);
     
+    // Genera pares de items para llenar los restantes anaqueles
+    for (int i = 1; i < NUM_ANAQUELES; ++i) {
+        int item1 = (rand() % (ALTURA_MAX / 20) + 1) * 10;
+        int item2 = ALTURA_MAX - item1;
+        items.push_back(item1);
+        items.push_back(item2);
+    }
+
+    // Ordena los items en orden decreciente
+    sort(items.begin(), items.end(), greater<int>());
+
     return items;
 }
 
