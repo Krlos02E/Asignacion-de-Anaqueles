@@ -104,15 +104,20 @@ Individuo seleccionTorneo(vector <Individuo>& poblacion, int tamanhoTorneo) {
 }
 
 vector <Individuo> seleccionarSupervivientes(vector <Individuo>& poblacion, vector <Individuo>& poblacionDescendencia, int tamanhoPoblacion) {
-    vector <Individuo> siguientePoblacion;
     poblacion.insert(poblacion.end(), poblacionDescendencia.begin(), poblacionDescendencia.end());
     sort(poblacion.begin(), poblacion.end(), [](Individuo& a, Individuo& b) {
         return a.fitness > b.fitness;
-        });
-    for (int i = 0; i < tamanhoPoblacion; i++) {
-        siguientePoblacion.push_back(poblacion[i]);
+    });
+	vector <int> ruleta;
+    while (poblacion.size() != tamanhoPoblacion) {
+        for(int j = 0; j < poblacion.size(); j++) {
+			for(int k = 0; k <= j; k++) ruleta.push_back(j);
+		}
+		int indiceRand = rand() % ruleta.size();
+		poblacion.erase(poblacion.begin() + ruleta[indiceRand]);
+		ruleta.clear();
     }
-    return siguientePoblacion;
+    return poblacion;
 }
 
 //Cambie un poco el fitness ya que si sobraban cajas pero igual se llenaban los anaqueles igual daba el maximo
