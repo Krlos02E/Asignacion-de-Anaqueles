@@ -45,9 +45,14 @@ vector <Individuo> inicializarPoblacion(int popsize, int numItems, vector<int> a
     for (int i = 0; i < popsize; i++) {
         vector <int> cromo(numItems, 0);
         vector<int> alturasAnaqueles(anaqueles.size(), 0);       //Inicializar vector para analizar restringir la poblacion por alturas
-        for (int j = 0; j < numItems; j++) {
+        vector<bool> usado(numItems, false);
+        int itemsRestantes = numItems;
+        while (itemsRestantes > 0) {
+            int j = rand() % items.size();
+            if (usado[j]) continue;
             bool asignado = false;
             int intentos = 0;                       // Colocar un maximo de intentos a probar por item (para evitar bucles infinitos)
+            
             while (!asignado && intentos < 5) {
                 int indiceAnaquel = rand() % anaqueles.size();    // Seleccionar un anaquel al azar
                 if (alturasAnaqueles[indiceAnaquel] + items[j] <= alturaMax) {
@@ -60,12 +65,14 @@ vector <Individuo> inicializarPoblacion(int popsize, int numItems, vector<int> a
             if (!asignado) {
                 cromo[j] = -1;
             }
+            usado[j] = true;
+            itemsRestantes--;
         }
 
         poblacion.emplace_back(cromo, 0);
         calcularFitness(poblacion[i], items, anaqueles.size(), alturaMax);
         imprimeSolucion(poblacion[i], items, anaqueles.size());
-        
+
     }
     return poblacion;
 }
@@ -212,7 +219,7 @@ void mutacion_permutation_inversion(Individuo& individuo) {
     reverse(individuo.cromosoma.begin() + position1, individuo.cromosoma.begin() + position2);
 }
 
-void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int numAnaqueles, int ALTURA_MAX,
+int algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int numAnaqueles, int ALTURA_MAX,
     int generaciones, double tasaMutacion, int tamanhoTorneo, int puntosDeCorte) {
     int popsize = poblacion.size();
     evaluarPoblacion(poblacion, items, numAnaqueles, ALTURA_MAX);
@@ -263,6 +270,7 @@ void algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int nu
     }
     
     imprimeSolucion(mejorIndividuo, items, numAnaqueles);
+    return mejorIndividuo.fitness;
 }
 
 
@@ -320,8 +328,9 @@ vector<int> generarItemsPerfectos(int ALTURA_MAX, int NUM_ANAQUELES, int NUM_ITE
         items.push_back(item2);
     }
 
+    //Krlos -> Lo comenté xq no se si el agoritmo brillaria tanto xq probablemente en la construccion lo haria creo
     // Ordena los items en orden decreciente
-    sort(items.begin(), items.end(), greater<int>());
+    //sort(items.begin(), items.end(), greater<int>());
 
     return items;
 }
@@ -347,17 +356,22 @@ int main(int argc, char** argv) {
     //vector <int> items = { 150, 150, 150, 150, 150};
     //const int NUM_ITEMS = items.size();
 
+    const int NUM_ITEMS = 9;
+    // Genera 10 items aleatorios que encaja en los anaqueles 
     //const int NUM_ITEMS = 9;
     //vector <int> items = generarItemsAleatorios(ALTURA_MAX, NUM_ITEMS);
-    
-    // Genera 10 items aleatorios que encaja en los anaqueles 
-    const int NUM_ITEMS = 10;
-    vector <int> items = generarItemsAleatorios(ALTURA_MAX, NUM_ITEMS);
+    vector <int> items = generarItemsPerfectos(ALTURA_MAX, NUM_ANAQUELES, NUM_ITEMS);
     
     vector<int> anaqueles(NUM_ANAQUELES, ALTURA_MAX);
+
     vector <Individuo> poblacion = inicializarPoblacion(POPSIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX);
-
-    algoritmoGenetico(poblacion, items, NUM_ANAQUELES, ALTURA_MAX, GENERACIONES, TASA_MUTACION_A, TAMANHO_TORNEO, PUNTOS_CORTE);
-
+    //Para ver en cuantas iteraciones llega al optimo
+    int i = 1;
+    while(true){
+        std::cout << "============== Iteracion: " << i << " del algoritmo genetico ================\n";
+        int f = algoritmoGenetico(poblacion, items, NUM_ANAQUELES, ALTURA_MAX, GENERACIONES, TASA_MUTACION_B, TAMANHO_TORNEO, PUNTOS_CORTE);
+        if(f == 750) break;
+        i++;
+    }
     return 0;
 }
