@@ -364,10 +364,10 @@ int main(int argc, char** argv) {
     
     vector<int> anaqueles(NUM_ANAQUELES, ALTURA_MAX);
 
-    vector <Individuo> poblacion = inicializarPoblacion(POPSIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX);
     //Para ver en cuantas iteraciones llega al optimo
     int i = 1;
     while(true){
+        vector <Individuo> poblacion = inicializarPoblacion(POPSIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX);
         std::cout << "============== Iteracion: " << i << " del algoritmo genetico ================\n";
         int f = algoritmoGenetico(poblacion, items, NUM_ANAQUELES, ALTURA_MAX, GENERACIONES, TASA_MUTACION_B, TAMANHO_TORNEO, PUNTOS_CORTE);
         if(f == 750) break;
