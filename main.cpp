@@ -123,7 +123,6 @@ vector <Individuo> seleccionarSupervivientes(vector <Individuo>& poblacion, vect
     return poblacion;
 }
 
-//Cambie un poco el fitness ya que si sobraban cajas pero igual se llenaban los anaqueles igual daba el maximo
 void calcularFitness(Individuo& individuo, vector <int> items, int numAnaqueles, int alturaMax) {
     int sumaAltura, sumaAlturaCajasAsignadas = 0;
     int sumaAlturaCajasSueltas = 0;
@@ -392,7 +391,7 @@ int main(int argc, char** argv) {
 
 
     //Para ver en cuantas iteraciones llega al optimo
-    //Para una generacion de items exacta colocar en el ultimo parametro "exacta", de lo contrario colocar "aleatoria"
+    //Para una generacion de items exacta colocar "exacta", de lo contrario colocar "aleatoria"
     //Para un cruce elegir entre tipo "uniforme" o "multipunto"
     //En caso escoger un cruce multipunto ingresar como ultimo parametro la cantidad de puntos a usar en el cruce
     //Para la mutacion elegir entre "singleGene" o "inversion"
@@ -401,18 +400,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
-//Krlos
-//---Mutacion permutacion por inversion - diapo 21
-//---Implementar el cruzamiento multipunto
-//---Generar items aleatorios
-
-//Mateo
-//---poblacion inical con restriccion
-
-//Jairo
-//Generar arreglo de cajas que calcen perfectamente
-//Hacer las 10 ejecuciones
-
-//Nicolas
-//Seleccion de sobrevivientes no tan heuristico
