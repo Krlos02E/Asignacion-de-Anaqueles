@@ -235,7 +235,7 @@ int algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int num
     Individuo mejorIndividuo(poblacion[posMejorFitness].cromosoma, poblacion[posMejorFitness].fitness);
     mejorFitness.push_back(mejorIndividuo.fitness);
 
-    cout << "Poblacion inicial, mejor fitness = " << mejorIndividuo.fitness << endl;
+    //cout << "Poblacion inicial, mejor fitness = " << mejorIndividuo.fitness << endl;
 
     for (int i = 0; i < generaciones; i++) {
         vector <pair <Individuo, Individuo>> poolCruces;
@@ -284,7 +284,8 @@ int algoritmoGenetico(vector <Individuo>& poblacion, vector <int> items, int num
         }*/
     }
 
-    imprimeSolucion(mejorIndividuo, items, numAnaqueles);
+    //imprimeSolucion(mejorIndividuo, items, numAnaqueles);
+    //cout << "Despues del algoritmo, mejor fitness = " << mejorIndividuo.fitness << endl;
     return mejorIndividuo.fitness;
 }
 
@@ -346,27 +347,40 @@ void probarAlgoritmoGenetico(const int NUM_ANAQUELES, const int ALTURA_MAX, cons
                             const int POP_SIZE, const int GENERACIONES, const double TASA_MUTACION, const int TAM_TORNEO,
                             string generacionItems, string tipoCruce, string tipoMutacion, int puntosCorte = 2) {
         
-    vector <int> items;
-    if (generacionItems == "exacta") {
-        items = generarItemsPerfectos(ALTURA_MAX, NUM_ANAQUELES, NUM_ITEMS);
+    if(tipoCruce != "uniforme" && tipoCruce != "multipunto"){
+        cout << "Elija un tipo de cruce adecuado";
+        return;
     }
-    else if (generacionItems == "aleatoria") {
-        items = generarItemsAleatorios(ALTURA_MAX, NUM_ITEMS);
+    if(tipoMutacion != "singleGene" && tipoMutacion != "inversion"){
+        cout << "Elija un tipo de mutacion adecuado";
+        return;
     }
+    if(generacionItems != "exacta" && generacionItems != "aleatoria"){
+        std::cout << "Elija un tipo de generacion adecuada";
+        return;
+    }
+
+    vector <int> items = (generacionItems == "exacta") 
+    ? generarItemsPerfectos(ALTURA_MAX, NUM_ANAQUELES, NUM_ITEMS) 
+    : generarItemsAleatorios(ALTURA_MAX, NUM_ITEMS);
+
     vector<int> anaqueles(NUM_ANAQUELES, ALTURA_MAX);
-
     double promedio = 0;
-    
+    int mejorFitness = NUM_ANAQUELES * ALTURA_MAX;
+    int contador = 0;
     for (int i = 0; i < NUM_ITERACIONES; i++) {
-
         vector <Individuo> poblacion = inicializarPoblacion(POP_SIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX);
         double fitActual = algoritmoGenetico(poblacion, items, NUM_ANAQUELES, ALTURA_MAX, GENERACIONES, TASA_MUTACION, TAM_TORNEO, tipoCruce, tipoMutacion, puntosCorte);
         promedio += fitActual;
+        if(generacionItems == "exacta" && mejorFitness == fitActual) 
+            contador++;
     }
     promedio /= NUM_ITERACIONES;
     cout << "Promedio del fitness en " << NUM_ITERACIONES << " iteraciones: " << promedio << endl;
     if (generacionItems == "exacta") {
-        int mejorFitness = NUM_ANAQUELES * ALTURA_MAX;
+        double porcentaje = ((double)contador / NUM_ITERACIONES) * 100;
+        cout << "Cantidad de soluciones optimas encontradas en " << NUM_ITERACIONES << " ejecuciones: " << contador << endl;
+        cout << "Porcentaje de solucion optima encontrada entre las soluciones: " << porcentaje << "%\n";
         cout << "Mejor fitness para generacion de cajas exactas: " << mejorFitness;
     }
 }
@@ -387,15 +401,14 @@ int main(int argc, char** argv) {
     const int TAMANHO_TORNEO = 3;
     const int PUNTOS_CORTE = 2;
 
-    const int NUM_ITERACIONES = 10;
+    const int NUM_ITERACIONES = 100;
 
 
-    //Para ver en cuantas iteraciones llega al optimo
     //Para una generacion de items exacta colocar "exacta", de lo contrario colocar "aleatoria"
     //Para un cruce elegir entre tipo "uniforme" o "multipunto"
     //En caso escoger un cruce multipunto ingresar como ultimo parametro la cantidad de puntos a usar en el cruce
     //Para la mutacion elegir entre "singleGene" o "inversion"
-    probarAlgoritmoGenetico(NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_B,
+    probarAlgoritmoGenetico(NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
         TAMANHO_TORNEO, "exacta", "uniforme", "singleGene");
 
     return 0;
