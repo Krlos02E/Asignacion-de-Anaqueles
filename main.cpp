@@ -399,8 +399,8 @@ int main(int argc, char** argv) {
 
     srand(time(0));
 
-    const int NUM_ANAQUELES = 5;
-    const int ALTURA_MAX = 150;
+    const int NUM_ANAQUELES = 6;
+    const int ALTURA_MAX = 200;
     const int NUM_ITEMS = 11;
 
     const int POPSIZE = 10;
@@ -424,16 +424,28 @@ int main(int argc, char** argv) {
     probarAlgoritmoGenetico("ReporteMultipunto_SinMutacion.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_A,
         TAMANHO_TORNEO, "exacta", "multipunto", "inversion", 3);
 
-    probarAlgoritmoGenetico("ReporteUniforme_SingleGene.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+    probarAlgoritmoGenetico("ReporteUniforme_SingleGene1.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_B,
         TAMANHO_TORNEO, "exacta", "uniforme", "singleGene");
 
-    probarAlgoritmoGenetico("ReporteUniforme_Inversion.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+    probarAlgoritmoGenetico("ReporteUniforme_Inversion1.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_B,
         TAMANHO_TORNEO, "exacta", "uniforme", "inversion");
 
-    probarAlgoritmoGenetico("ReporteMultipunto_SingleGene.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+    probarAlgoritmoGenetico("ReporteUniforme_SingleGene2.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+        TAMANHO_TORNEO, "exacta", "uniforme", "singleGene");
+
+    probarAlgoritmoGenetico("ReporteUniforme_Inversion2.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+        TAMANHO_TORNEO, "exacta", "uniforme", "inversion");
+
+    probarAlgoritmoGenetico("ReporteMultipunto_SingleGene1.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_B,
         TAMANHO_TORNEO, "exacta", "multipunto", "singleGene", 3);
 
-    probarAlgoritmoGenetico("ReporteMultipunto_Inversion.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+    probarAlgoritmoGenetico("ReporteMultipunto_Inversion1.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_B,
+        TAMANHO_TORNEO, "exacta", "multipunto", "inversion", 3);
+
+    probarAlgoritmoGenetico("ReporteMultipunto_SingleGene2.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+        TAMANHO_TORNEO, "exacta", "multipunto", "singleGene", 3);
+
+    probarAlgoritmoGenetico("ReporteMultipunto_Inversion2.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
         TAMANHO_TORNEO, "exacta", "multipunto", "inversion", 3);
 
     return 0;

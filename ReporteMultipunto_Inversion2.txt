@@ -1,0 +1,110 @@
+Tipo de Cruce: multipunto
+Tasa de Mutacion: 0.8
+Tipo de Mutacion: inversion
+Tipo de Generacion: exacta
+===========================================
+Fitness en iteracion 1: 879
+Fitness en iteracion 2: 921
+Fitness en iteracion 3: 1131
+Fitness en iteracion 4: 1074
+Fitness en iteracion 5: 846
+Fitness en iteracion 6: 1089
+Fitness en iteracion 7: 915
+Fitness en iteracion 8: 885
+Fitness en iteracion 9: 921
+Fitness en iteracion 10: 921
+Fitness en iteracion 11: 1131
+Fitness en iteracion 12: 915
+Fitness en iteracion 13: 1158
+Fitness en iteracion 14: 1131
+Fitness en iteracion 15: 915
+Fitness en iteracion 16: 846
+Fitness en iteracion 17: 879
+Fitness en iteracion 18: 921
+Fitness en iteracion 19: 837
+Fitness en iteracion 20: 915
+Fitness en iteracion 21: 1131
+Fitness en iteracion 22: 915
+Fitness en iteracion 23: 1131
+Fitness en iteracion 24: 915
+Fitness en iteracion 25: 1131
+Fitness en iteracion 26: 879
+Fitness en iteracion 27: 1131
+Fitness en iteracion 28: 1158
+Fitness en iteracion 29: 921
+Fitness en iteracion 30: 915
+Fitness en iteracion 31: 1158
+Fitness en iteracion 32: 726
+Fitness en iteracion 33: 1131
+Fitness en iteracion 34: 921
+Fitness en iteracion 35: 879
+Fitness en iteracion 36: 915
+Fitness en iteracion 37: 1131
+Fitness en iteracion 38: 1131
+Fitness en iteracion 39: 921
+Fitness en iteracion 40: 879
+Fitness en iteracion 41: 1158
+Fitness en iteracion 42: 915
+Fitness en iteracion 43: 915
+Fitness en iteracion 44: 1131
+Fitness en iteracion 45: 879
+Fitness en iteracion 46: 726
+Fitness en iteracion 47: 879
+Fitness en iteracion 48: 1200
+Fitness en iteracion 49: 1131
+Fitness en iteracion 50: 921
+Fitness en iteracion 51: 726
+Fitness en iteracion 52: 1158
+Fitness en iteracion 53: 921
+Fitness en iteracion 54: 915
+Fitness en iteracion 55: 1131
+Fitness en iteracion 56: 879
+Fitness en iteracion 57: 921
+Fitness en iteracion 58: 915
+Fitness en iteracion 59: 915
+Fitness en iteracion 60: 726
+Fitness en iteracion 61: 879
+Fitness en iteracion 62: 1131
+Fitness en iteracion 63: 915
+Fitness en iteracion 64: 879
+Fitness en iteracion 65: 1074
+Fitness en iteracion 66: 915
+Fitness en iteracion 67: 726
+Fitness en iteracion 68: 921
+Fitness en iteracion 69: 921
+Fitness en iteracion 70: 1131
+Fitness en iteracion 71: 915
+Fitness en iteracion 72: 1158
+Fitness en iteracion 73: 1131
+Fitness en iteracion 74: 1131
+Fitness en iteracion 75: 915
+Fitness en iteracion 76: 921
+Fitness en iteracion 77: 915
+Fitness en iteracion 78: 726
+Fitness en iteracion 79: 921
+Fitness en iteracion 80: 915
+Fitness en iteracion 81: 915
+Fitness en iteracion 82: 1200
+Fitness en iteracion 83: 915
+Fitness en iteracion 84: 1131
+Fitness en iteracion 85: 1158
+Fitness en iteracion 86: 915
+Fitness en iteracion 87: 879
+Fitness en iteracion 88: 1131
+Fitness en iteracion 89: 1131
+Fitness en iteracion 90: 726
+Fitness en iteracion 91: 810
+Fitness en iteracion 92: 1131
+Fitness en iteracion 93: 1131
+Fitness en iteracion 94: 1131
+Fitness en iteracion 95: 915
+Fitness en iteracion 96: 1200
+Fitness en iteracion 97: 879
+Fitness en iteracion 98: 726
+Fitness en iteracion 99: 915
+Fitness en iteracion 100: 726
+===========================================
+Promedio del fitness en 100 iteraciones: 971.16
+Cantidad de soluciones optimas encontradas en 100 ejecuciones: 3
+Porcentaje de solucion optima encontrada entre las soluciones: 3%
+Mejor fitness para generacion de cajas exactas: 1200
