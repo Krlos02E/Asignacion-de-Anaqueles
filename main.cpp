@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include <vector>
 #include <algorithm>
 #include <cstdlib>
@@ -343,7 +344,7 @@ vector<int> generarItemsPerfectos(int ALTURA_MAX, int NUM_ANAQUELES, int NUM_ITE
 }
 
 
-void probarAlgoritmoGenetico(const int NUM_ANAQUELES, const int ALTURA_MAX, const int NUM_ITEMS, const int NUM_ITERACIONES,
+void probarAlgoritmoGenetico(string nom, const int NUM_ANAQUELES, const int ALTURA_MAX, const int NUM_ITEMS, const int NUM_ITERACIONES,
                             const int POP_SIZE, const int GENERACIONES, const double TASA_MUTACION, const int TAM_TORNEO,
                             string generacionItems, string tipoCruce, string tipoMutacion, int puntosCorte = 2) {
         
@@ -368,20 +369,29 @@ void probarAlgoritmoGenetico(const int NUM_ANAQUELES, const int ALTURA_MAX, cons
     double promedio = 0;
     int mejorFitness = NUM_ANAQUELES * ALTURA_MAX;
     int contador = 0;
+    
+    ofstream output(nom, ios::out);
+    output << "Tipo de Cruce: " << tipoCruce << endl;
+    output << "Tasa de Mutacion: " << TASA_MUTACION << endl;
+    output << "Tipo de Mutacion: " << tipoMutacion << endl;
+    output << "Tipo de Generacion: " << generacionItems << endl;
+    output << "===========================================\n";
     for (int i = 0; i < NUM_ITERACIONES; i++) {
         vector <Individuo> poblacion = inicializarPoblacion(POP_SIZE, NUM_ITEMS, anaqueles, items, ALTURA_MAX);
         double fitActual = algoritmoGenetico(poblacion, items, NUM_ANAQUELES, ALTURA_MAX, GENERACIONES, TASA_MUTACION, TAM_TORNEO, tipoCruce, tipoMutacion, puntosCorte);
         promedio += fitActual;
+        output << "Fitness en iteracion " << i + 1 << ": " << fitActual << endl;
         if(generacionItems == "exacta" && mejorFitness == fitActual) 
             contador++;
     }
+    output << "===========================================\n";
     promedio /= NUM_ITERACIONES;
-    cout << "Promedio del fitness en " << NUM_ITERACIONES << " iteraciones: " << promedio << endl;
+    output << "Promedio del fitness en " << NUM_ITERACIONES << " iteraciones: " << promedio << endl;
     if (generacionItems == "exacta") {
         double porcentaje = ((double)contador / NUM_ITERACIONES) * 100;
-        cout << "Cantidad de soluciones optimas encontradas en " << NUM_ITERACIONES << " ejecuciones: " << contador << endl;
-        cout << "Porcentaje de solucion optima encontrada entre las soluciones: " << porcentaje << "%\n";
-        cout << "Mejor fitness para generacion de cajas exactas: " << mejorFitness;
+        output << "Cantidad de soluciones optimas encontradas en " << NUM_ITERACIONES << " ejecuciones: " << contador << endl;
+        output << "Porcentaje de solucion optima encontrada entre las soluciones: " << porcentaje << "%\n";
+        output << "Mejor fitness para generacion de cajas exactas: " << mejorFitness;
     }
 }
 
@@ -408,8 +418,23 @@ int main(int argc, char** argv) {
     //Para un cruce elegir entre tipo "uniforme" o "multipunto"
     //En caso escoger un cruce multipunto ingresar como ultimo parametro la cantidad de puntos a usar en el cruce
     //Para la mutacion elegir entre "singleGene" o "inversion"
-    probarAlgoritmoGenetico(NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+    probarAlgoritmoGenetico("ReporteUniforme_SinMutacion.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_A,
         TAMANHO_TORNEO, "exacta", "uniforme", "singleGene");
+
+    probarAlgoritmoGenetico("ReporteMultipunto_SinMutacion.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_A,
+        TAMANHO_TORNEO, "exacta", "multipunto", "inversion", 3);
+
+    probarAlgoritmoGenetico("ReporteUniforme_SingleGene.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+        TAMANHO_TORNEO, "exacta", "uniforme", "singleGene");
+
+    probarAlgoritmoGenetico("ReporteUniforme_Inversion.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+        TAMANHO_TORNEO, "exacta", "uniforme", "inversion");
+
+    probarAlgoritmoGenetico("ReporteMultipunto_SingleGene.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+        TAMANHO_TORNEO, "exacta", "multipunto", "singleGene", 3);
+
+    probarAlgoritmoGenetico("ReporteMultipunto_Inversion.txt", NUM_ANAQUELES, ALTURA_MAX, NUM_ITEMS, NUM_ITERACIONES, POPSIZE, GENERACIONES, TASA_MUTACION_C,
+        TAMANHO_TORNEO, "exacta", "multipunto", "inversion", 3);
 
     return 0;
 }
